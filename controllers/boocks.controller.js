@@ -1,22 +1,24 @@
 const Book = require("../models/Book.model ");
 
 module.exports.booksController = {
-  addBooks: function (req, res) {
-    Book.create({
+  addBooks: async function (req, res) {
+    const data = await Book.create({
       name: req.body.name,
       author: req.body.author,
       genre: req.body.genre,
-    }).then((book) => {
-      res.json(book);
-    });
+		rented: req.body.rented,
+    })
+	 return res.json(data)
   },
   getBooks: function (req, res) {
-    Book.find().populate("author").populate("genre").then((books) => {
-      res.json(books);
-    });
+    Book.find()
+      .populate("author genre rented")
+      .then((books) => {
+        res.json(books);
+      });
   },
   getBooksByGenre: function (req, res) {
-    Book.find({genre: req.params.genreId}).then((books) => {
+    Book.find({ genre: req.params.genreId }).then((books) => {
       res.json(books);
     });
   },
@@ -33,6 +35,7 @@ module.exports.booksController = {
         name: req.body.name,
         author: req.body.author,
         genre: req.body.genre,
+        rented: req.body.rented,
       },
       { new: true }
     ).then((boock) => {
@@ -44,4 +47,25 @@ module.exports.booksController = {
       res.json(boock);
     });
   },
+  rentBoock: async function (req, res) {
+    const data = await Book.findByIdAndUpdate(req.params.boockId);
+	 if(data.rented){
+		return res.json('книга уже арендована')
+	}
+		await Book.findByIdAndUpdate(req.params.boockId, {
+			$set: {rented: req.body.user }
+		})
+		return res.json(data)
+  },
+  getBoockByRent: async function (req, res) {
+	const data = await Book.find(req.params.boockId).populate('rented')
+	return res.json(data)
+ },
+//  rentBoock: async function (req, res) {
+// 	const data = await Book.findByIdAndUpdate(req.params.boockId, {
+// 	  $set: {rented: req.body.user}
+// 	},{new: true});
+// 	return res.json(data)
+//  }, было до исправления контроллера 
+
 };

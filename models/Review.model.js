@@ -1,3 +1,12 @@
+/*
+{
+	"lyricReview": "",
+	"nameAuthorReview":"",
+   "book": ""
+}
+*/
+
+
 const mongoose = require("mongoose");
 const reviewSchema = mongoose.Schema({
 	lyricReview: String,

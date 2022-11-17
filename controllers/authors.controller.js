@@ -1,17 +1,16 @@
 const Author = require("../models/Author.model");
 
 module.exports.authorController = {
-  addAuther: function (req, res) {
-    Author.create({
+  addAuther: async function (req, res) {
+    const data = await Author.create({
       authorName: req.body.authorName,
       description: req.body.description,
-    }).then((author) => {
-      res.json(author);
     });
+    return res.json(data);
   },
-  getAuther: function (req, res) {
-    Author.find().then((author) => {
-      res.json(author);
+  getAuther: async function (req, res) {
+    const data = await Author.find().then((author) => {
+      return res.json(author);
     });
   },
 };
